@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Menyang Gong">
+
+
+
+
+
+<title>Blog Design based on Hexo and Github | Chivalric Menyang Gong</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Chivalric Menyang Gong</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Chivalric Menyang Gong</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Blog Design based on Hexo and Github</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Menyang Gong</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 10, 2023&nbsp;&nbsp;10:00:00</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Verson: 0.0.1</p>
+<h1 id="Foreword"><a href="#Foreword" class="headerlink" title="Foreword"></a>Foreword</h1><p>This blog post mainly introduces the blog construction and related content based on Hexo and Github Pages.</p>
+<h1 id="Environment-build"><a href="#Environment-build" class="headerlink" title="Environment build"></a>Environment build</h1><h2 id="Install-Nodejs"><a href="#Install-Nodejs" class="headerlink" title="Install Nodejs"></a>Install Nodejs</h2><ol>
+<li>Go to the official website to download the latest <a target="_blank" rel="noopener" href="https://nodejs.cn/download/">Nodejs installation package</a>.</li>
+<li>Run the installation package to install, note that you need to select <code>Add to PATH</code> in the <code>Custom Setup</code> step.</li>
+</ol>
+<h2 id="Install-Git"><a href="#Install-Git" class="headerlink" title="Install Git"></a>Install Git</h2><ol>
+<li>Go to the official website to download the latest <a target="_blank" rel="noopener" href="https://git-scm.com/">Git installation package</a>.</li>
+<li>Run the installation package to install.</li>
+</ol>
+<h2 id="Verify-Nodejs-installation-configuration"><a href="#Verify-Nodejs-installation-configuration" class="headerlink" title="Verify Nodejs installation configuration"></a>Verify Nodejs installation configuration</h2><ol>
+<li>Right click anywhere and select <code>Git Bash</code> Here.</li>
+<li>Execute the command <code>node -v</code> and <code>npm -v</code>. If the output information is the version number, it proves that the configuration is successful.</li>
+</ol>
+<h2 id="Install-cnpm"><a href="#Install-cnpm" class="headerlink" title="Install cnpm"></a>Install cnpm</h2><ol>
+<li>Execute the command <code>npm install -g cnpm --registry=https://registry.npm.taobao.org</code> in <code>Git Bash</code>.</li>
+<li>Execute the command <code>cnpm -v</code>. If the output information is the version number, it proves that the configuration is successful.</li>
+</ol>
+<h1 id="Hexo"><a href="#Hexo" class="headerlink" title="Hexo"></a>Hexo</h1><h2 id="Install-Hexo"><a href="#Install-Hexo" class="headerlink" title="Install Hexo"></a>Install Hexo</h2><ol>
+<li>Execute the command <code>cnpm install hexo-cli -g</code> in <code>Git Bash</code>.</li>
+<li>Choose a suitable location to create a <code>blog</code> folder, open <code>Git Bash</code> in this <code>blog</code> folder and execute the command <code>hexo init</code>. Note that in the mainland network environment, there may be a freeze at <code>Install dependencies</code>. If the installation freezes for a long time, you could execute the command <code>Ctrl+C</code> to end the command Install dependencies, and execute the command <code>cnpm install</code> to continue to use the mainland mirror to complete the initialization of the hexo blog.</li>
+<li>Execute the command <code>hexo server</code> to preview the blog. The output URL is generally <a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000/</a>, which is the preview page for local deployment.</li>
+</ol>
+<h2 id="Replace-Hexo-theme"><a href="#Replace-Hexo-theme" class="headerlink" title="Replace Hexo theme"></a>Replace Hexo theme</h2><p>The <a target="_blank" rel="noopener" href="https://hexo.io/themes/">Hexo official website</a> provides a large number of Hexo themes for users to choose.</p>
+<p>If you want to practice this step of replace Hexo theme, you can choose the <strong>Next theme</strong>. The <strong>Next theme</strong> provides <a target="_blank" rel="noopener" href="https://theme-next.org/index.html">preview effects</a>, <a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next">project addresses</a> and configuration documents, which is quiet easy to grasp.</p>
+<h2 id="Download-other-themes"><a href="#Download-other-themes" class="headerlink" title="Download other themes"></a>Download other themes</h2><ol>
+<li>Open the project addresses of the theme you enjoy, click the <code>Clone or download</code>.</li>
+<li>Copy the address started with “https:&#x2F;&#x2F;“.</li>
+<li>Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>git clone *address you copied* themes/*theme name*</code>. Here, <code>git clone</code> stands for cloning, followed by the download addresses you just copied. The last <code>themes/*theme name*</code> is to download the folder to the theme directory, and name the theme file “theme name”.</li>
+</ol>
+<h2 id="Modify-the-configuration-file-to-enable-the-new-theme"><a href="#Modify-the-configuration-file-to-enable-the-new-theme" class="headerlink" title="Modify the configuration file to enable the new theme"></a>Modify the configuration file to enable the new theme</h2><ol>
+<li>Open the file named <code>_config.yml</code> in the blog directory.</li>
+<li>Find the line <code>themes</code>, and then change the theme name to <code>*theme name*</code> you have just named.</li>
+</ol>
+<h2 id="Generate-new-blog-posts"><a href="#Generate-new-blog-posts" class="headerlink" title="Generate new blog posts"></a>Generate new blog posts</h2><ol>
+<li>Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>hexo new *your blog name*</code>.</li>
+<li>Each generated blog post is stored in <code>source/_posts</code> under your <code>blog</code> folder.</li>
+<li>Blog posts are generally markdown-based <code>.md</code> format files. You could further write and revise your blog posts.</li>
+</ol>
+<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="Create-new-repository"><a href="#Create-new-repository" class="headerlink" title="Create new repository"></a>Create new repository</h2><p>Click the <code>Create repository</code> button to create a new repository. The name of new repository must be <code>*your user name*.github.io</code>.</p>
+<h2 id="Generate-a-git-key-and-link"><a href="#Generate-a-git-key-and-link" class="headerlink" title="Generate a git key and link"></a>Generate a git key and link</h2><ol>
+<li>Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>ssh-keygen -t rsa -C &quot;your_email@youremail.com&quot;</code>. No matter what message appears, you just need to press <code>Enter</code>.</li>
+<li>Execute the command <code>cat ~/.ssh/id_rsa.pub</code>. The <code>secret key</code> is output. You could copy the output key directly.</li>
+<li>Click the <code>avatar</code> of your github, click <code>Settings–SSH and GPG keys–New SSH Key</code>.</li>
+<li>Paste the <code>secret key</code> you just copied in the key text box. Click the button <code>Add SHH key</code>.</li>
+<li>Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>ssh -T git@github.com</code>. The output information will prompt <code>Are you sure you want to continue connecting (yes/no/[fingerprint])?</code>, enter <code>yes</code>, and then press <code>Enter</code>.</li>
+<li>Open your repository, click the <code>Clone or download–Use SSH</code>. Copy the address started with “git”. Open site configuration file. Modify deployment information <code>_config.yml</code>.<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line"> type: git</span><br><span class="line"> repo: *the address started with &quot;git&quot; you just copied*</span><br><span class="line"> branch: master</span><br></pre></td></tr></table></figure></li>
+<li>Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>git config --global user.name &quot;yourname&quot;</code> and command <code>git config --global user.email &quot;youremail&quot;</code>.</li>
+</ol>
+<h2 id="Deploy-and-upload"><a href="#Deploy-and-upload" class="headerlink" title="Deploy and upload"></a>Deploy and upload</h2><ol>
+<li>Install the upload plugin. Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>cnpm install hexo-deployer-git --save</code>.</li>
+<li>Upload. Open <code>Git Bash</code> in your <code>blog</code> folder and execute the command <code>hexo g -d</code>.</li>
+</ol>
+<h1 id="Thanks-and-Reference"><a href="#Thanks-and-Reference" class="headerlink" title="Thanks and Reference"></a>Thanks and Reference</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huanhao/">Huanhao</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huanhao/p/hexobase.html">https://www.cnblogs.com/huanhao/p/hexobase.html</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Menyang Gong</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://gmy-acoustics.github.io/2023/10/10/Blog%20Design%20based%20on%20Hexo%20and%20Github/">https://gmy-acoustics.github.io/2023/10/10/Blog%20Design%20based%20on%20Hexo%20and%20Github/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2023 <a target="_blank" rel="noopener" href="https://choosealicense.com/licenses/gpl-2.0/">GNU General Public License v2.0</a></span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Focus on Self-improvement</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Blog-Framework/"># Blog Framework</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/10/20/Blog%20Design%20based%20on%20Theme%20Chic/">Blog Design based on Theme Chic</a>
+            
+            
+            <a class="next" rel="next" href="/2023/10/01/Hello%20World%20-%20Test%20Blog/">Hello World - Test Blog</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Menyang Gong | Powered by <a href="https://github.com/gmy-acoustics" target="_blank">Menyang Gong</a> & <a href="https://choosealicense.com/licenses/gpl-2.0/" target="_blank">GNU General Public License v2.0</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
